@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, StyleSheet, Text, View, TextInput } from 'react-native'
 import DateTimePicker from 'react-native-modal-datetime-picker'
-import { Camera } from 'react-native-camera'
+import { RNCamera } from 'react-native-camera'
 
 const BASE_URL = 'http://localhost:3000'
 
@@ -14,18 +14,17 @@ export default class App extends React.Component {
     this.renderItem = this.renderItem.bind(this)
     this.captureImage = this.captureImage.bind(this)
     this.sendItem = this.sendItem.bind(this)
-    this.showDatePicker = this.showDatePicker.bind(this)
   }
 
   captureImage () {
    return (
-      <Camera
+      <RNCamera
         ref={(cam) => {
           this.camera = cam;
         }}
         // style={styles.preview}
-        aspect={Camera.constants.Aspect.fill}
-        captureTarget={Camera.constants.CaptureTarget.disk}
+        aspect={RNCamera.constants.Aspect.fill}
+        captureTarget={RNCamera.constants.CaptureTarget.disk}
       >
         <TouchableHighlight
           // style={styles.capture}
@@ -34,7 +33,7 @@ export default class App extends React.Component {
         >
           <View />
         </TouchableHighlight>
-      </Camera>
+      </RNCamera>
     )
   }
 
