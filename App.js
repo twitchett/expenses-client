@@ -11,7 +11,7 @@ const MODES = {
 }
 
 export default class App extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       mode: MODES.menu,
@@ -25,22 +25,17 @@ export default class App extends React.Component {
   }
 
   renderCamera () {
-    console.log('in capture image....', RNCamera)
     return (
       <View style={styles.container}>
         <RNCamera
           ref={(cam) => {
-            this.camera = cam;
+            this.camera = cam
           }}
           style={ styles.preview }
           type={ RNCamera.Constants.Type.back }
           permissionDialogTitle={ 'Permission to use camera' }
-          permissionDialogMessage={ 'We need your permission to use your camera phone' }
-          onCameraReady={() => console.log('camera ready')}
+          permissionDialogMessage={ 'This won\'t work unless I have camera permission' }
           onMountError={(e) => console.warn('on mount error: ', e)}
-          // style={styles.preview}
-          // aspect={RNCamera.Constants.Aspect.fill}
-          // captureTarget={RNCamera.Constants.CaptureTarget.disk}
         >
           <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center', }}>
             <TouchableOpacity
@@ -56,11 +51,18 @@ export default class App extends React.Component {
 
   }
 
-  takePicture = async function () {
+  async takePicture () {
     if (this.camera) {
-      const options = { quality: 0.5, base64: true };
+      const options = {
+        quality: 0.5,  // between 0 and 1
+        base64: true   // return base64 representation of image
+      }
       const data = await this.camera.takePictureAsync(options)
-      console.log(data.uri);
+      this.setState({
+        expenseImage: data.base64,
+        mode: MODES.menu
+      })
+      console.log(data.uri)
     } else {
       console.warn('where\'s my camera?')
     }
@@ -109,8 +111,13 @@ export default class App extends React.Component {
   }
 
   renderMenu () {
+    const hasImage = !!this.state.expenseImage 
     return (
       <View style={ styles.container }>
+        { hasImage
+          ? <Text>[ TODO: dispay image ]</Text>
+          : <Text>[ no image ]</Text> 
+        }
         <Button
           title="Image"
           onPress={ () => this.setState({ mode: MODES.camera }) }
@@ -133,7 +140,8 @@ export default class App extends React.Component {
 
     if (mode === MODES.menu) {
       return this.renderMenu()
-    } else if (mode === MODES.camera) {
+    }
+    if (mode === MODES.camera) {
       return this.renderCamera()
     }
   }
@@ -158,6 +166,7 @@ const styles = StyleSheet.create({
   preview: {
     flex: 1,
     justifyContent: 'flex-end',
+    alignSelf: 'stretch',
     alignItems: 'center'
   },
   capture: {
@@ -169,4 +178,4 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     margin: 20
   }
-});
+})
